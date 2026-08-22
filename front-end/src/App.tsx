@@ -8,10 +8,12 @@ import { Home } from "./pages/Home";
 import { Shop } from "./pages/Shop";
 import { ProductDetail } from "./pages/ProductDetail";
 import { Cart } from "./pages/Cart";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
+
 
 import { useCartStore } from "./store/useCartStore";
-
-import { ProtectedRoute } from './components/ProtectedRoute';
+//import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
   useEffect(() => {
@@ -49,6 +51,10 @@ function App() {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
 
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        {/* 
         <Route 
           path="/checkout" 
           element={
@@ -64,8 +70,8 @@ function App() {
               <Contact />
             </ProtectedRoute>
           } 
-        />
-
+        /> 
+        */}
       </Routes>
 
       <Footer />
