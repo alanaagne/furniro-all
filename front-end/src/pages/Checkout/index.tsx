@@ -2,6 +2,9 @@
 
 import React, { useState } from "react";
 import type { CSSProperties } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useCartStore } from "@store/useCartStore";
 import { Banner } from "@components/PageBanner";
 import { FeaturesSection } from "@components/FeaturesSection";
 
@@ -12,6 +15,7 @@ interface FormDataState {
   country: string;
   street: string;
   city: string;
+  province: string;
   zip: string;
   phone: string;
   email: string;
@@ -25,14 +29,19 @@ interface PaymentOption {
 }
 
 export default function Checkout() {
-  const [selectedPayment, setSelectedPayment] = useState<string>("");
+  const navigate = useNavigate();
+  const { clearCart } = useCartStore();
+  const [selectedPayment, setSelectedPayment] = useState<string>("bank_transfer_1");
+  const [loadingCep, setLoadingCep] = useState<boolean>(false);
+
   const [formData, setFormData] = useState<FormDataState>({
     firstName: "",
     lastName: "",
     company: "",
-    country: "Sri Lanka",
+    country: "Brasil",
     street: "",
     city: "",
+    province: "",
     zip: "",
     phone: "",
     email: "",
@@ -44,10 +53,84 @@ export default function Checkout() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleCepBlur = async () => {
+    const cleanCep = formData.zip.replace(/\D/g, "");
+
+    if (cleanCep.length === 8) {
+      try {
+        setLoadingCep(true);
+        const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+        const data = await response.json();
+
+        if (data.erro) {
+          toast.error("CEP não encontrado. Verifique o número digitado.", {
+            style: {
+              borderRadius: "10px",
+              background: "#333",
+              color: "#fff",
+              fontFamily: "Poppins, sans-serif"
+            }
+          });
+          return;
+        }
+
+        setFormData((prev) => ({
+          ...prev,
+          street: data.logradouro || prev.street,
+          city: data.localidade || prev.city,
+          province: data.uf || prev.province,
+          country: "Brasil",
+        }));
+
+        toast.success("Endereço preenchido automaticamente!", {
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+            fontFamily: "Poppins, sans-serif"
+          },
+          iconTheme: {
+            primary: "#B88E2F",
+            secondary: "#fff"
+          }
+        });
+      } catch (error) {
+        console.error("Erro ao buscar CEP:", error);
+        toast.error("Erro ao buscar dados do CEP.");
+      } finally {
+        setLoadingCep(false);
+      }
+    }
+  };
+
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!selectedPayment) return;
-    alert(`Pedido realizado com sucesso! Método: ${selectedPayment}`);
+    
+    if (!selectedPayment) {
+      toast.error("Por favor, selecione um método de pagamento.");
+      return;
+    }
+
+    toast.success("Order placed successfully!", {
+      duration: 4000,
+      style: {
+        borderRadius: "10px",
+        background: "#333",
+        color: "#fff",
+        fontFamily: "Poppins, sans-serif",
+        fontSize: "15px"
+      },
+      iconTheme: {
+        primary: "#B88E2F",
+        secondary: "#fff",
+      },
+    });
+
+    clearCart();
+
+    setTimeout(() => {
+      navigate("/");
+    }, 2000);
   };
 
   const paymentOptions: PaymentOption[] = [
@@ -75,7 +158,6 @@ export default function Checkout() {
       <main style={{ maxWidth: "1240px", margin: "0 auto", padding: "63px 20px" }}>
         <form onSubmit={handleSubmit} style={{ display: "flex", gap: "26px", flexWrap: "wrap", justifyContent: "space-between" }}>
           
-          {/* Coluna da Esquerda: Billing Details */}
           <div style={{ flex: "1 1 500px", maxWidth: "608px" }}>
             <h2 style={{ fontSize: "36px", fontWeight: 600, marginBottom: "36px", color: "#000000" }}>
               Billing details
@@ -98,10 +180,28 @@ export default function Checkout() {
             </div>
 
             <div style={{ marginBottom: "36px" }}>
+              <label htmlFor="zip" style={labelStyle}>
+                ZIP code {loadingCep && <span style={{ fontSize: "12px", color: "#B88E2F" }}>(Buscando...)</span>}
+              </label>
+              <input 
+                id="zip" 
+                name="zip" 
+                type="text" 
+                maxLength={9}
+                placeholder="00000-000"
+                required 
+                value={formData.zip} 
+                onChange={handleInputChange} 
+                onBlur={handleCepBlur}
+                style={inputStyle} 
+              />
+            </div>
+
+            <div style={{ marginBottom: "36px" }}>
               <label htmlFor="country" style={labelStyle}>Country / Region</label>
               <select id="country" name="country" value={formData.country} onChange={handleInputChange} style={{ ...inputStyle, backgroundColor: "#fff" }}>
-                <option value="Sri Lanka">Sri Lanka</option>
                 <option value="Brasil">Brasil</option>
+                <option value="Sri Lanka">Sri Lanka</option>
               </select>
             </div>
 
@@ -116,8 +216,8 @@ export default function Checkout() {
             </div>
 
             <div style={{ marginBottom: "36px" }}>
-              <label htmlFor="zip" style={labelStyle}>ZIP code</label>
-              <input id="zip" name="zip" type="text" required value={formData.zip} onChange={handleInputChange} style={inputStyle} />
+              <label htmlFor="province" style={labelStyle}>Province / State</label>
+              <input id="province" name="province" type="text" required value={formData.province} onChange={handleInputChange} style={inputStyle} />
             </div>
 
             <div style={{ marginBottom: "36px" }}>
@@ -135,7 +235,6 @@ export default function Checkout() {
             </div>
           </div>
 
-          {/* Coluna da Direita: Order Summary */}
           <div style={{ width: "100%", maxWidth: "608px", padding: "87px 37px" }}>
             <div style={{ width: "100%", maxWidth: "533px", margin: "0 auto" }}>
               
@@ -163,7 +262,6 @@ export default function Checkout() {
 
               <hr style={{ border: "none", borderTop: "1px solid #D9D9D9", marginBottom: "22px" }} />
 
-              {/* Opções de Pagamento */}
               <div role="radiogroup" aria-label="Payment Methods" style={{ display: "flex", flexDirection: "column", gap: "11px", marginBottom: "25px" }}>
                 {paymentOptions.map((item) => {
                   const isSelected = selectedPayment === item.id;

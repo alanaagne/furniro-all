@@ -13,7 +13,7 @@ import { Register } from "./pages/Register";
 import Checkout from "./pages/Checkout";
 
 import { useCartStore } from "./store/useCartStore";
-//import { ProtectedRoute } from "./components/ProtectedRoute";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
   useEffect(() => {
@@ -50,21 +50,18 @@ function App() {
 
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
+
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          }
+        />
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
-        {/* 
-        <Route 
-          path="/contact" 
-          element={
-            <ProtectedRoute>
-              <Contact />
-            </ProtectedRoute>
-          } 
-        /> 
-        */}
       </Routes>
 
       <Footer />

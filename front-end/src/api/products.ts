@@ -36,7 +36,7 @@ export function mapApiProductToProduct(product: ApiProduct): Product {
 
 export async function getProducts(params?: ProductQueryParams) {
   const response = await apiFetch<PaginatedResponse<ApiProduct>>("/products", {
-    params,
+    params: params as Record<string, unknown>,
   });
 
   return {
