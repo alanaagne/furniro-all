@@ -11,6 +11,8 @@ import { Cart } from "./pages/Cart";
 
 import { useCartStore } from "./store/useCartStore";
 
+import { ProtectedRoute } from './components/ProtectedRoute';
+
 function App() {
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
@@ -46,6 +48,24 @@ function App() {
 
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
+
+        <Route 
+          path="/checkout" 
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/contact" 
+          element={
+            <ProtectedRoute>
+              <Contact />
+            </ProtectedRoute>
+          } 
+        />
+
       </Routes>
 
       <Footer />
