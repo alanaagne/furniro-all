@@ -10,7 +10,7 @@ import { ProductDetail } from "./pages/ProductDetail";
 import { Cart } from "./pages/Cart";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
-
+import Checkout from "./pages/Checkout";
 
 import { useCartStore } from "./store/useCartStore";
 //import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -50,19 +50,12 @@ function App() {
 
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
         {/* 
-        <Route 
-          path="/checkout" 
-          element={
-            <ProtectedRoute>
-              <Checkout />
-            </ProtectedRoute>
-          } 
-        />
         <Route 
           path="/contact" 
           element={

@@ -1,9 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "@store/useCartStore";
 import { FeaturesSection } from "@pages/Shop/sections/FeaturesSection";
 import trashIcon from "@assets/trashIcon.svg"; 
 import { Banner } from "@components/PageBanner";
-import toast from "react-hot-toast";
 import { formatPrice } from "@utils/formatPrice";
 
 const parsePrice = (priceStr: string) => {
@@ -11,7 +10,8 @@ const parsePrice = (priceStr: string) => {
 };
 
 export function Cart() {
-  const { items, updateQuantity, removeItem, clearCart } = useCartStore();
+  const navigate = useNavigate();
+  const { items, updateQuantity, removeItem } = useCartStore();
 
   const cartTotal = items.reduce((acc, item) => {
     return acc + parsePrice(item.price) * item.quantity;
@@ -19,17 +19,7 @@ export function Cart() {
 
   const handleCheckOut = () => {
     if (items.length > 0) {
-      clearCart();
-      toast.success(`Checkout successful! Proceeding to payment.`, {
-        style: {
-          background: "#2EC1AC",
-          color: "#fff",
-        },
-        iconTheme: {
-          primary: "#fff",
-          secondary: "#2EC1AC",
-        },
-      });
+      navigate("/checkout");
     }
   };
 
@@ -205,7 +195,7 @@ export function Cart() {
           )}
         </div>
 
-        <FeaturesSection/>
+        <FeaturesSection />
       </div>
     </>
   );
