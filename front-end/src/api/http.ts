@@ -15,17 +15,19 @@ export async function apiFetch<T>(
 
   if (params) {
     for (const [key, value] of Object.entries(params)) {
-      if (value !== undefined && value !== null) {
+      if (value !== undefined && value !== null && value !== "") {
         url.searchParams.append(key, String(value));
       }
     }
   }
 
   const token = useAuthStore.getState().token;
+  const isGetRequest = !requestOptions.method || requestOptions.method.toUpperCase() === "GET";
 
   const requestHeaders: HeadersInit = {
     'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    // Não envia Token em buscas GET para não estourar o CORS no servidor simulado
+    ...(token && !isGetRequest ? { Authorization: `Bearer ${token}` } : {}),
     ...headers,
   };
 
