@@ -8,7 +8,6 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  // Puxa a action da Store para adicionar o item ao carrinho
   const addItem = useCartStore((state) => state.addItem);
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
