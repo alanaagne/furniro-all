@@ -6,10 +6,13 @@ import iconCart from "@assets/iconCart.svg";
 import iconProfile from "@assets/iconProfile.svg";
 import { useCartStore } from "@store/useCartStore";
 import { useAuthStore } from "@store/useAuthStore";
+import { CartSidebar } from "@components/CartSidebar"; 
 import toast from "react-hot-toast";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
   const hasCartItems = useCartStore((state) => state.items.length > 0);
 
   const { token, user, logout } = useAuthStore();
@@ -22,47 +25,51 @@ export function Header() {
   }
 
   function handleProfileClick() {
-  if (isAuthenticated) {
-    toast((t) => (
-      <div className="flex flex-col gap-3 font-poppins text-sm">
-        <p className="text-gray-700">
-          Logado como <strong className="text-black font-semibold">{user?.email}</strong>. Deseja sair?
-        </p>
-        <div className="flex items-center justify-end gap-2 pt-1">
-          <button
-            onClick={() => toast.dismiss(t.id)}
-            className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={() => {
-              toast.dismiss(t.id);
-              logout();
-              toast.success("Sessão encerrada com sucesso!");
-              navigate("/");
-            }}
-            className="px-3 py-1.5 text-xs font-semibold text-white bg-black hover:bg-neutral-800 rounded transition-colors"
-          >
-            Sair
-          </button>
-        </div>
-      </div>
-    ), {
-      duration: 6000,
-      position: "top-center",
-      style: {
-        background: "#ffffff",
-        borderRadius: "8px",
-        boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-        padding: "16px",
-        border: "1px solid #E8E8E8",
-      },
-    });
-  } else {
-    navigate("/login");
+    if (isAuthenticated) {
+      toast(
+        (t) => (
+          <div className="flex flex-col gap-3 font-poppins text-sm">
+            <p className="text-gray-700">
+              Logado como <strong className="text-black font-semibold">{user?.email}</strong>. Deseja sair?
+            </p>
+            <div className="flex items-center justify-end gap-2 pt-1">
+              <button
+                onClick={() => toast.dismiss(t.id)}
+                className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  logout();
+                  toast.success("Sessão encerrada com sucesso!");
+                  navigate("/");
+                }}
+                className="px-3 py-1.5 text-xs font-semibold text-white bg-black hover:bg-neutral-800 rounded transition-colors"
+              >
+                Sair
+              </button>
+            </div>
+          </div>
+        ),
+        {
+          duration: 6000,
+          position: "top-center",
+          style: {
+            background: "#ffffff",
+            borderRadius: "8px",
+            boxShadow:
+              "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+            padding: "16px",
+            border: "1px solid #E8E8E8",
+          },
+        }
+      );
+    } else {
+      navigate("/login");
+    }
   }
-}
 
   return (
     <>
@@ -127,7 +134,11 @@ export function Header() {
               />
             </button>
 
-            <Link to="/cart" className="relative">
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative focus:outline-none"
+              title="Abrir carrinho"
+            >
               <img
                 src={iconCart}
                 alt="Carrinho"
@@ -137,7 +148,7 @@ export function Header() {
               {hasCartItems && (
                 <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />
               )}
-            </Link>
+            </button>
 
             <button
               onClick={() => setIsMenuOpen(true)}
@@ -221,16 +232,18 @@ export function Header() {
 
           <hr />
 
-          <Link
-            to="/cart"
-            onClick={closeMenu}
-            className="relative w-fit hover:text-[#B88E2F]"
+          <button
+            onClick={() => {
+              closeMenu();
+              setIsCartOpen(true);
+            }}
+            className="relative w-fit text-left hover:text-[#B88E2F]"
           >
             Cart
             {hasCartItems && (
               <span className="absolute -right-4 top-1 h-2.5 w-2.5 rounded-full bg-red-500" />
             )}
-          </Link>
+          </button>
 
           <button
             onClick={() => {
@@ -243,6 +256,11 @@ export function Header() {
           </button>
         </nav>
       </aside>
+
+      <CartSidebar
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+      />
     </>
   );
 }
