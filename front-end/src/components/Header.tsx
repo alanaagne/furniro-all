@@ -20,6 +20,8 @@ export function Header() {
 
   const navigate = useNavigate();
 
+  const firstName = user?.name ? user.name.split(" ")[0] : "Usuário";
+
   function closeMenu() {
     setIsMenuOpen(false);
   }
@@ -137,14 +139,20 @@ export function Header() {
           <div className="flex flex-1 items-center justify-end gap-5 lg:gap-[35px] text-[#000000]">
             <button
               onClick={handleProfileClick}
-              title={isAuthenticated ? `Sair (${user?.name})` : "Fazer Login"}
-              className="focus:outline-none"
+              title={isAuthenticated ? "Clique para sair" : "Fazer Login"}
+              className="focus:outline-none flex items-center gap-2"
             >
-              <img
-                src={iconProfile}
-                alt="Perfil"
-                className="w-6 lg:w-auto cursor-pointer hover:opacity-75 transition-opacity"
-              />
+              {isAuthenticated ? (
+                <span className="font-poppins text-sm font-medium text-[#000000] hover:text-[#B88E2F] transition-colors cursor-pointer">
+                  Olá, {firstName}
+                </span>
+              ) : (
+                <img
+                  src={iconProfile}
+                  alt="Perfil"
+                  className="w-6 lg:w-auto cursor-pointer hover:opacity-75 transition-opacity"
+                />
+              )}
             </button>
 
             <button
@@ -265,7 +273,7 @@ export function Header() {
             }}
             className="text-left hover:text-[#B88E2F]"
           >
-            {isAuthenticated ? `Logout (${user?.name})` : "Login"}
+            {isAuthenticated ? `Logout (${firstName})` : "Login"}
           </button>
         </nav>
       </aside>
