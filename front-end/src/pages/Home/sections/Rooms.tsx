@@ -17,8 +17,6 @@ const roomsData = [
 export function Rooms() {
   return (
     <section className="w-full bg-[#FCF8F3] py-11 overflow-hidden relative flex justify-center">
-      {/* css puro para forçar a cor das bolinhas por cima do carrossel,
-          ja q n tem tag para usar tailwind*/}
       <style>
         {`
           .splide__pagination {
@@ -38,13 +36,7 @@ export function Rooms() {
         `}
       </style>
 
-      {/* =========================================
-          CONTAINER PRINCIPAL
-          =========================================*/}
       <div className="w-full max-w-[1183px] px-5 lg:px-0 flex flex-col lg:flex-row items-center gap-10">
-        {/* =========================================
-            LADO ESQUERDO
-            ========================================= */}
         <div className="flex flex-col items-start w-full lg:w-1/3 max-w-[422px]">
           <h2 className="font-poppins font-bold text-[32px] md:text-[40px] leading-[1.2] md:leading-[48px] text-[#3A3A3A] mb-2">
             50+ Beautiful rooms inspiration
@@ -60,9 +52,6 @@ export function Rooms() {
           </Link>
         </div>
 
-        {/* =========================================
-            LADO DIREITO
-            ========================================= */}
         <div className="w-full lg:w-2/3 ml-auto">
           <Splide
             options={{
@@ -90,9 +79,6 @@ export function Rooms() {
                     className="w-full h-full object-cover rounded-[4px]"
                   />
 
-                  {/*========================================= 
-                  CAIXA BRANCA DE INFO
-                  =========================================*/}
                   <div className="absolute bottom-6 left-4 md:left-6 bg-white/70 backdrop-blur-sm p-4 md:p-6 flex flex-col gap-2 min-w-[217px] opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300">
                     <span className="font-poppins font-medium text-[16px] text-[#616161]">
                       {room.category}
