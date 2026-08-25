@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+
+import { useAuthStore } from "@store/useAuthStore";
 
 import facebookIcon from "@assets/facebook.svg";
 import instagramIcon from "@assets/instagram.svg";
@@ -9,6 +11,21 @@ import linkedinIcon from "@assets/linkedin.svg";
 
 export function Footer() {
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+
+  const { token, user } = useAuthStore();
+  const isAuthenticated = !!token || !!user;
+
+  function handleContactClick(e: React.MouseEvent) {
+    e.preventDefault();
+
+    if (isAuthenticated) {
+      navigate("/contact");
+    } else {
+      toast.error("Faça login para acessar a página de contato.");
+      navigate("/login");
+    }
+  }
 
   const handleSubscribe = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,9 +58,7 @@ export function Footer() {
 
   return (
     <footer className="w-full bg-white flex justify-center pt-16 pb-8 border-t border-gray-200">
-      
       <div className="w-full max-w-[1183px] px-5 lg:px-0 flex flex-col">
-        
         <div className="flex flex-col lg:flex-row justify-between gap-10 mb-12 flex-wrap">
           
           <div className="flex flex-col gap-10 max-w-[285px]">
@@ -103,12 +118,20 @@ export function Footer() {
               <Link to="/shop" className="hover:text-[#B88E2F] transition-colors">
                 Shop
               </Link>
-              <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-[#B88E2F] transition-colors cursor-pointer">
+              <a
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                className="hover:text-[#B88E2F] transition-colors cursor-pointer"
+              >
                 About
               </a>
-              <Link to="/contact" className="hover:text-[#B88E2F] transition-colors">
+              <a
+                href="/contact"
+                onClick={handleContactClick}
+                className="hover:text-[#B88E2F] transition-colors cursor-pointer"
+              >
                 Contact
-              </Link>
+              </a>
             </nav>
           </div>
 

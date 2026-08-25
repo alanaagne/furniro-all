@@ -11,6 +11,7 @@ import { Cart } from "./pages/Cart";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import Checkout from "./pages/Checkout";
+import Contact from "./pages/Contact";
 
 import { useCartStore } from "./store/useCartStore";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -58,6 +59,15 @@ function App() {
               <Checkout />
             </ProtectedRoute>
           }
+        />
+
+        <Route 
+          path="/contact" 
+          element={
+            <ProtectedRoute>
+              <Contact />
+            </ProtectedRoute>
+           } 
         />
 
         <Route path="/login" element={<Login />} />
