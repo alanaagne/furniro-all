@@ -16,12 +16,24 @@ export function Header() {
   const hasCartItems = useCartStore((state) => state.items.length > 0);
 
   const { token, user, logout } = useAuthStore();
-  const isAuthenticated = !!token;
+  const isAuthenticated = !!token || !!user;
 
   const navigate = useNavigate();
 
   function closeMenu() {
     setIsMenuOpen(false);
+  }
+
+  function handleContactClick(e: React.MouseEvent) {
+    e.preventDefault();
+    closeMenu();
+
+    if (isAuthenticated) {
+      navigate("/contact");
+    } else {
+      toast.error("Faça login para acessar a página de contato.");
+      navigate("/login");
+    }
   }
 
   function handleProfileClick() {
@@ -113,12 +125,13 @@ export function Header() {
               About
             </a>
 
-            <Link
-              to="/contact"
-              className="hover:text-[#B88E2F] transition-colors"
+            <a
+              href="/contact"
+              onClick={handleContactClick}
+              className="hover:text-[#B88E2F] transition-colors cursor-pointer"
             >
               Contact
-            </Link>
+            </a>
           </nav>
 
           <div className="flex flex-1 items-center justify-end gap-5 lg:gap-[35px] text-[#000000]">
@@ -222,13 +235,13 @@ export function Header() {
             About
           </a>
 
-          <Link
-            to="/contact"
-            onClick={closeMenu}
-            className="hover:text-[#B88E2F]"
+          <a
+            href="/contact"
+            onClick={handleContactClick}
+            className="hover:text-[#B88E2F] cursor-pointer"
           >
             Contact
-          </Link>
+          </a>
 
           <hr />
 
