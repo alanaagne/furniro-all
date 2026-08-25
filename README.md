@@ -188,6 +188,14 @@ The phase 3 was developed by:
 
 ---
 
+## Development Experience
+
+Evolving an existing codebase presents unique challenges, as it requires understanding the architectural decisions made by the team to deliver seamless and compatible solutions. However, exploring the different technical approaches chosen by others and finding ways to align them effectively was a deeply rewarding experience.
+
+Having enjoyed the first phase of the challenge, I was highly motivated coming into this third phase. Familiarity with the project structure and codebase allowed for a much smoother workflow, making this phase noticeably more productive and faster-paced than the first.
+
+---
+
 ## Acknowledgements
 
 Developed with dedication for the **Compass UOL Fellowship Program**.
