@@ -57,7 +57,7 @@ export const useCartStore = create<CartState>()(
       },
     }),
     {
-      name: "shopping-cart-storage", // Nome que ficará no LocalStorage
+      name: "shopping-cart-storage", 
     },
   ),
 );
