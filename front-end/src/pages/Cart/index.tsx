@@ -1,9 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "@store/useCartStore";
 import { FeaturesSection } from "@pages/Shop/sections/FeaturesSection";
 import trashIcon from "@assets/trashIcon.svg"; 
 import { Banner } from "@components/PageBanner";
-import toast from "react-hot-toast";
 import { formatPrice } from "@utils/formatPrice";
 
 const parsePrice = (priceStr: string) => {
@@ -11,7 +10,8 @@ const parsePrice = (priceStr: string) => {
 };
 
 export function Cart() {
-  const { items, updateQuantity, removeItem, clearCart } = useCartStore();
+  const navigate = useNavigate();
+  const { items, updateQuantity, removeItem } = useCartStore();
 
   const cartTotal = items.reduce((acc, item) => {
     return acc + parsePrice(item.price) * item.quantity;
@@ -19,17 +19,7 @@ export function Cart() {
 
   const handleCheckOut = () => {
     if (items.length > 0) {
-      clearCart();
-      toast.success(`Checkout successful! Proceeding to payment.`, {
-        style: {
-          background: "#2EC1AC",
-          color: "#fff",
-        },
-        iconTheme: {
-          primary: "#fff",
-          secondary: "#2EC1AC",
-        },
-      });
+      navigate("/checkout");
     }
   };
 
@@ -39,7 +29,6 @@ export function Cart() {
       <div className="w-full bg-white flex flex-col items-center pt-10 pb-20">
         <div className="w-full max-w-[1240px] px-4 lg:px-0">
           
-          {/* Título da Página */}
           <div className="mb-6 lg:mb-10 text-center lg:text-left">
             <h2 className="font-poppins font-bold text-[28px] lg:text-[32px] text-[#333333]">
               Shopping Cart
@@ -58,7 +47,6 @@ export function Cart() {
           ) : (
             <div className="flex flex-col lg:flex-row gap-8">
               
-              {/* LISTA DE PRODUTOS - MOBILE (Cards) */}
               <div className="flex flex-col gap-4 lg:hidden w-full">
                 {items.map((item) => {
                   const itemSubtotal = parsePrice(item.price) * item.quantity;
@@ -110,7 +98,6 @@ export function Cart() {
                 })}
               </div>
 
-              {/* TABELA DE PRODUTOS - DESKTOP */}
               <div className="hidden lg:block flex-1 overflow-x-auto">
                 <table className="w-full min-w-[700px] text-left border-collapse">
                   <thead className="bg-[#F9F1E7] font-poppins font-medium text-[16px] text-[#000000]">
@@ -173,7 +160,6 @@ export function Cart() {
                 </table>
               </div>
 
-              {/* CART TOTALS */}
               <div className="w-full lg:w-[393px] bg-[#F9F1E7] px-6 lg:px-[75px] py-8 lg:pt-[15px] lg:pb-[80px] flex flex-col items-center rounded-lg lg:rounded-none h-fit">
                 <h2 className="font-poppins font-semibold text-[24px] lg:text-[32px] text-[#000000] mb-8 lg:mb-[60px]">
                   Cart Totals
@@ -205,7 +191,7 @@ export function Cart() {
           )}
         </div>
 
-        <FeaturesSection/>
+        <FeaturesSection />
       </div>
     </>
   );

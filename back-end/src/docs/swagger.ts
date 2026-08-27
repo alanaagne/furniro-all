@@ -3,7 +3,7 @@ export const swaggerDocument = {
   info: {
     title: 'Furniro API',
     version: '1.0.0',
-    description: 'API for browsing Furniro store products.'
+    description: 'Furniro e-commerce API for product browsing, user authentication, contact submission, and checkout.'
   },
   servers: [
     {
@@ -12,10 +12,10 @@ export const swaggerDocument = {
     }
   ],
   tags: [
-    {
-      name: 'Products',
-      description: 'Product browsing'
-    }
+    { name: 'Products', description: 'Product browsing and search' },
+    { name: 'Auth', description: 'User management (Login and Register)' },
+    { name: 'Contact', description: 'Contact form submission' },
+    { name: 'Orders', description: 'Order creation and checkout' }
   ],
   paths: {
     '/products': {
@@ -24,131 +24,125 @@ export const swaggerDocument = {
         summary: 'List products',
         description: 'Returns paginated products with filtering, search, and sorting support.',
         parameters: [
-          {
-            name: 'page',
-            in: 'query',
-            description: 'Current page.',
-            schema: { type: 'integer', minimum: 1, default: 1 }
-          },
-          {
-            name: 'limit',
-            in: 'query',
-            description: 'Number of items per page. The maximum limit is 100.',
-            schema: { type: 'integer', minimum: 1, maximum: 100, default: 10 }
-          },
-          {
-            name: 'category',
-            in: 'query',
-            description: 'Filters products by category.',
-            schema: { type: 'string', example: 'dining' }
-          },
-          {
-            name: 'search',
-            in: 'query',
-            description: 'Searches products by name.',
-            schema: { type: 'string', example: 'chair' }
-          },
-          {
-            name: 'minPrice',
-            in: 'query',
-            description: 'Minimum price.',
-            schema: { type: 'number', example: 500000 }
-          },
-          {
-            name: 'maxPrice',
-            in: 'query',
-            description: 'Maximum price.',
-            schema: { type: 'number', example: 3500000 }
-          },
-          {
-            name: 'sort',
-            in: 'query',
-            description: 'Field used for sorting.',
-            schema: {
-              type: 'string',
-              enum: ['id', 'price', 'name', 'category'],
-              default: 'id'
-            }
-          },
-          {
-            name: 'order',
-            in: 'query',
-            description: 'Sorting direction.',
-            schema: { type: 'string', enum: ['ASC', 'DESC'], default: 'ASC' }
-          }
+          { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+          { name: 'limit', in: 'query', schema: { type: 'integer', default: 10 } },
+          { name: 'category', in: 'query', schema: { type: 'string', example: 'dining' } },
+          { name: 'search', in: 'query', schema: { type: 'string', example: 'chair' } },
+          { name: 'minPrice', in: 'query', schema: { type: 'number' } },
+          { name: 'maxPrice', in: 'query', schema: { type: 'number' } },
+          { name: 'sort', in: 'query', schema: { type: 'string', enum: ['id', 'price', 'name', 'category'], default: 'id' } },
+          { name: 'order', in: 'query', schema: { type: 'string', enum: ['ASC', 'DESC'], default: 'ASC' } }
         ],
         responses: {
           '200': {
             description: 'Paginated product list.',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/PaginatedProducts' }
-              }
-            }
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/PaginatedProducts' } } }
           },
-          '500': {
-            description: 'Internal server error.',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          }
+          '500': { description: 'Internal server error.' }
         }
       }
     },
     '/products/{identifier}': {
       get: {
         tags: ['Products'],
-        summary: 'Find product by id or slug',
+        summary: 'Find product by ID or Slug',
         parameters: [
-          {
-            name: 'identifier',
-            in: 'path',
-            required: true,
-            description: 'Numeric id or product slug.',
-            schema: { type: 'string', example: 'syltherine' }
-          }
+          { name: 'identifier', in: 'path', required: true, schema: { type: 'string', example: 'syltherine' } }
         ],
         responses: {
           '200': {
             description: 'Product found.',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/Product' }
-              }
-            }
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Product' } } }
           },
-          '404': {
-            description: 'Product not found.',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          },
-          '500': {
-            description: 'Internal server error.',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
+          '404': { description: 'Product not found.' }
+        }
+      }
+    },
+    '/register': {
+      post: {
+        tags: ['Auth'],
+        summary: 'Register new user',
+        description: 'Creates a new user account in the application.',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': { schema: { $ref: '#/components/schemas/RegisterInput' } }
           }
+        },
+        responses: {
+          '201': { description: 'User registered successfully.' },
+          '400': { description: 'Invalid registration data or email already exists.' }
+        }
+      }
+    },
+    '/login': {
+      post: {
+        tags: ['Auth'],
+        summary: 'Authenticate user',
+        description: 'Validates credentials and returns a JWT token.',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': { schema: { $ref: '#/components/schemas/LoginInput' } }
+          }
+        },
+        responses: {
+          '200': {
+            description: 'Login successful.',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/AuthResponse' } } }
+          },
+          '401': { description: 'Invalid credentials.' }
+        }
+      }
+    },
+    '/contact': {
+      post: {
+        tags: ['Contact'],
+        summary: 'Send contact message (Protected)',
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': { schema: { $ref: '#/components/schemas/ContactInput' } }
+          }
+        },
+        responses: {
+          '201': { description: 'Message sent successfully.' },
+          '401': { description: 'Unauthorized. JWT token required.' }
+        }
+      }
+    },
+    '/orders': {
+      post: {
+        tags: ['Orders'],
+        summary: 'Place order / Checkout (Protected)',
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': { schema: { $ref: '#/components/schemas/OrderInput' } }
+          }
+        },
+        responses: {
+          '201': { description: 'Order placed successfully.' },
+          '401': { description: 'Unauthorized. JWT token required.' }
         }
       }
     }
   },
   components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT'
+      }
+    },
     schemas: {
       PaginatedProducts: {
         type: 'object',
-        required: ['data', 'page', 'limit', 'totalItems', 'totalPages'],
         properties: {
-          data: {
-            type: 'array',
-            items: { $ref: '#/components/schemas/Product' }
-          },
+          data: { type: 'array', items: { $ref: '#/components/schemas/Product' } },
           page: { type: 'integer', example: 1 },
           limit: { type: 'integer', example: 10 },
           totalItems: { type: 'integer', example: 8 },
@@ -157,24 +151,6 @@ export const swaggerDocument = {
       },
       Product: {
         type: 'object',
-        required: [
-          'id',
-          'slug',
-          'sku',
-          'name',
-          'category',
-          'price',
-          'finalPrice',
-          'discount',
-          'isNew',
-          'image',
-          'description',
-          'gallery',
-          'colors',
-          'sizes',
-          'complementaryDescription',
-          'additionalInfo'
-        ],
         properties: {
           id: { type: 'integer', example: 1 },
           slug: { type: 'string', example: 'syltherine' },
@@ -186,64 +162,68 @@ export const swaggerDocument = {
           discount: { type: 'number', example: 30 },
           isNew: { type: 'boolean', example: false },
           image: { type: 'string', example: 'prod-1.jpeg' },
-          description: { type: 'string', example: 'Stylish cafe chair' },
-          gallery: {
-            type: 'array',
-            items: { type: 'string' },
-            example: ['prod-1.jpeg']
-          },
-          colors: {
-            type: 'array',
-            items: { $ref: '#/components/schemas/ProductColor' }
-          },
-          sizes: {
-            type: 'array',
-            items: { $ref: '#/components/schemas/ProductSize' }
-          },
-          badge: {
-            type: 'string',
-            nullable: true,
-            example: '-30%'
-          },
-          badgeColor: {
-            type: 'string',
-            nullable: true,
-            example: '#E97171'
-          },
-          complementaryDescription: {
-            type: 'string',
-            example: 'A comfortable chair with a contemporary silhouette.'
-          },
-          additionalInfo: {
-            type: 'string',
-            example: 'Structure: solid wood. Upholstery: polyester. Indoor use only.'
+          description: { type: 'string', example: 'Stylish cafe chair' }
+        }
+      },
+      RegisterInput: {
+        type: 'object',
+        required: ['name', 'email', 'password'],
+        properties: {
+          name: { type: 'string', example: 'John Doe' },
+          email: { type: 'string', example: 'john@example.com' },
+          password: { type: 'string', example: '123456' }
+        }
+      },
+      LoginInput: {
+        type: 'object',
+        required: ['email', 'password'],
+        properties: {
+          email: { type: 'string', example: 'john@example.com' },
+          password: { type: 'string', example: '123456' }
+        }
+      },
+      AuthResponse: {
+        type: 'object',
+        properties: {
+          token: { type: 'string', example: 'eyJhbGciOiJIUzI1Ni...' },
+          user: {
+            type: 'object',
+            properties: {
+              id: { type: 'integer', example: 1 },
+              name: { type: 'string', example: 'John Doe' },
+              email: { type: 'string', example: 'john@example.com' }
+            }
           }
         }
       },
-      ProductColor: {
+      ContactInput: {
         type: 'object',
-        required: ['name', 'value', 'priceModifier'],
+        required: ['name', 'email'],
         properties: {
-          name: { type: 'string', example: 'Black' },
-          value: { type: 'string', example: '#111827' },
-          priceModifier: { type: 'number', example: 150000 }
+          name: { type: 'string', example: 'John Doe' },
+          email: { type: 'string', example: 'john@example.com' },
+          subject: { type: 'string', example: 'Shipping inquiry' },
+          message: { type: 'string', example: 'I would like to know the estimated delivery time.' }
         }
       },
-      ProductSize: {
+      OrderInput: {
         type: 'object',
-        required: ['name', 'priceModifier'],
+        required: ['items', 'paymentMethod', 'zipCode', 'streetAddress', 'city'],
         properties: {
-          name: { type: 'string', example: 'M' },
-          priceModifier: { type: 'number', example: 100000 }
-        }
-      },
-      ErrorResponse: {
-        type: 'object',
-        required: ['statusCode', 'message', 'errors'],
-        properties: {
-          statusCode: { type: 'integer', example: 404 },
-          message: { type: 'string', example: 'NotFoundException' },
-          errors: { type: 'string', example: 'Product not found' }
+          zipCode: { type: 'string', example: '33134' },
+          streetAddress: { type: 'string', example: '400 University Drive' },
+          city: { type: 'string', example: 'Coral Gables' },
+          paymentMethod: { type: 'string', example: 'direct_bank_transfer' },
+          items: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                productId: { type: 'integer', example: 1 },
+                quantity: { type: 'integer', example: 2 }
+              }
+            }
+          }
         }
       }
     }

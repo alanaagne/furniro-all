@@ -20,14 +20,9 @@ export function Forniture() {
         </h2>
       </div>
 
-      {/* CONTAINER MOSAICO */}
       <div className="relative w-full">
         <div className="relative left-1/2 -translate-x-1/2 flex items-center justify-center gap-4 w-max">
-          {/* =========================================================
-              1. BLOCO ESQUERDA direita/centro
-              ========================================================= */}
           <div className="flex flex-col gap-4 items-end justify-center w-[811px]">
-            {/* Esquerda Cima */}
             <div className="flex items-end gap-4">
               <img
                 src={setup1}
@@ -41,7 +36,6 @@ export function Forniture() {
               />
             </div>
 
-            {/* Esquerda Baixo*/}
             <div className="flex items-start gap-4">
               <img
                 src={setup2}
@@ -56,9 +50,6 @@ export function Forniture() {
             </div>
           </div>
 
-          {/* =========================================================
-              2. CENTRO
-              ========================================================= */}
           <div className="flex justify-center items-center shrink-0">
             <img
               src={setup5}
@@ -67,11 +58,7 @@ export function Forniture() {
             />
           </div>
 
-          {/* =========================================================
-              3. BLOCO DIREITA  esquerda/centro
-              ========================================================= */}
           <div className="flex flex-col gap-4 items-start justify-center w-[811px]">
-            {/* Direita Cima */}
             <div className="flex items-end gap-4">
               <img
                 src={setup6}
@@ -85,7 +72,6 @@ export function Forniture() {
               />
             </div>
 
-            {/* Direita Baixo */}
             <div className="flex items-start gap-4">
               <img
                 src={setup7}

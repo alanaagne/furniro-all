@@ -67,7 +67,6 @@ export function FilterBar({
     <section className="w-full bg-[#F9F1E7] min-h-[100px] flex items-center justify-center px-3 sm:px-4 lg:px-16 py-4">
       <div className="w-full max-w-[1240px] flex flex-col lg:flex-row items-center justify-between gap-5">
 
-        {/* ESQUERDA */}
         <div className="w-full lg:w-auto flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-5">
 
           <button
@@ -121,7 +120,6 @@ export function FilterBar({
           </span>
         </div>
 
-        {/* DIREITA */}
         <div className="w-full lg:w-auto flex flex-wrap items-center justify-center gap-4 sm:gap-6">
 
           <div className="flex items-center gap-2 sm:gap-4">

@@ -7,11 +7,7 @@ export function Hero() {
       className="w-full min-h-[716px] bg-cover bg-center bg-no-repeat flex justify-center"
       style={{ backgroundImage: `url(${heroBg})` }}
     >
-      {/*CONTAINER DE ALINHAMENTO*/}
       <div className="relative w-full max-w-[1183px] flex items-center justify-end px-5 lg:px-0">
-        {/* =========================================
-            CARTÃO DE CONTEÚDO
-            ========================================= */}
         <div className="bg-[#FFF3E3] rounded-[10px] pt-[62px] pb-[37px] pr-[43px] pl-[39px] max-w-[643px] w-full mt-[150px] md:mt-0">
           <span className="block font-poppins font-semibold text-[16px] tracking-[3px] text-[#333333] mb-1">
             New Arrival
