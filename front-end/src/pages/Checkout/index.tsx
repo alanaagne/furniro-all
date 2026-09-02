@@ -63,8 +63,25 @@ export default function Checkout() {
 
   const parsePrice = (priceStr: string | number): number => {
     if (typeof priceStr === "number") return priceStr;
-    const cleanStr = priceStr.replace(/[^\d.,]/g, "").replace(",", ".");
-    return parseFloat(cleanStr) || 0;
+
+    let cleanStr = priceStr.replace(/[^\d.,]/g, "");
+
+    if (cleanStr.includes(".") && cleanStr.includes(",")) {
+      cleanStr = cleanStr.lastIndexOf(".") < cleanStr.lastIndexOf(",")
+        ? cleanStr.replace(/\./g, "").replace(",", ".")
+        : cleanStr.replace(/,/g, "");
+    } else if (cleanStr.includes(",")) {
+      cleanStr = /,\d{3}$/.test(cleanStr)
+        ? cleanStr.replace(/,/g, "")
+        : cleanStr.replace(",", ".");
+    } else if (cleanStr.includes(".")) {
+      const parts = cleanStr.split(".");
+      if (parts.length > 2 || /\.\d{3}$/.test(cleanStr)) {
+        cleanStr = cleanStr.replace(/\./g, "");
+      }
+    }
+
+    return parseFloat(cleanStr.replace(/[^0-9.]/g, "")) || 0;
   };
 
   const calculateSubtotal = () => {
@@ -252,7 +269,7 @@ export default function Checkout() {
                       {item.name} <span style={{ color: "#000000", fontWeight: 500, fontSize: "12px" }}>X {item.quantity}</span>
                     </span>
                     <span style={{ fontSize: "16px", fontWeight: 300, color: "#000000" }}>
-                      Rs. {(parsePrice(item.price) * item.quantity).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      Rs. {(parsePrice(item.price) * item.quantity).toLocaleString('pt-BR')}
                     </span>
                   </div>
                 ))}
@@ -261,14 +278,14 @@ export default function Checkout() {
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "22px" }}>
                 <span style={{ fontSize: "16px", fontWeight: 400, color: "#000000" }}>Subtotal</span>
                 <span style={{ fontSize: "16px", fontWeight: 300, color: "#000000" }}>
-                  Rs. {totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  Rs. {totalAmount.toLocaleString('pt-BR')}
                 </span>
               </div>
 
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "34px" }}>
                 <span style={{ fontSize: "16px", fontWeight: 400, color: "#000000" }}>Total</span>
                 <span style={{ fontSize: "24px", fontWeight: 700, color: "#B88E2F" }}>
-                  Rs. {totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  Rs. {totalAmount.toLocaleString('pt-BR')}
                 </span>
               </div>
 
